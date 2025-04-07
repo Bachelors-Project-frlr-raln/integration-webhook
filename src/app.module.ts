@@ -5,6 +5,7 @@ import { RetailModule } from './retail/retail.module';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { AxiosHttpService } from './http/axios-http.service';
+import { OnSearchController } from './controllers/on_search.controller';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { AxiosHttpService } from './http/axios-http.service';
     RetailModule,
     HttpModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, OnSearchController],
   providers: [AxiosHttpService, AppService],
 })
 export class AppModule {}

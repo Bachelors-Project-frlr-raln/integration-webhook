@@ -11,6 +11,7 @@ import * as CancelResponse from "./response/response.cancel.json";
 import * as TrackResponse from "./response/response.track.json";
 import * as RatingResponse from './response/response.rating.json';
 import { ConfigService } from "@nestjs/config";
+import { connectToDatabase } from "../db";
 
 
 @Injectable()
@@ -91,5 +92,34 @@ export class RetailService {
         //We are returning the fixed the json which can be overwritten by actual business to fetch data
         return TrackResponse;
     };
+
+    async fetchServices(searchParams: any): Promise<any[]> {
+        const db = await connectToDatabase();
+        const location = searchParams.fulfillment?.start?.location;
+    
+        // Query the database for services based on location
+        const items = await db.collection('services').find({ location }).toArray();
+        return items;
+      }
+
+      formatOnSearchResponse(context: any, items: any[]): any {
+        return {
+          context,
+          message: {
+            catalog: {
+              items: items.map(item => ({
+                id: item._id,
+                descriptor: {
+                  name: item.name,
+                  short_desc: item.short_desc,
+                  long_desc: item.long_desc,
+                },
+                price: item.price,
+                location_ids: [item.location_id],
+              })),
+            },
+          },
+        };
+      }
 }
 
