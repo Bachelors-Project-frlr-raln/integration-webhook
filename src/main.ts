@@ -11,12 +11,12 @@ async function bootstrap() {
 }
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.log('Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1); // Exit the process with a failure code
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
+  console.log('Uncaught Exception:', error);
   process.exit(1); // Exit the process with a failure code
 });
 
