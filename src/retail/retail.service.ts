@@ -22,20 +22,25 @@ export class RetailService {
         this.bpp_uri = this.configService.get<string>('BPP_URI');
     }
     async search(request_DTO: any): Promise<any> {
-        const { context, message } = request_DTO;
-        console.log("context", context);
-        console.log("message", message);
-
-        const searchParams = message.intent;
-
-        // Fetch data from the database
-        const items = await this.fetchServices(searchParams);
-
-        // Format the response dynamically based on the fetched data
-        const response = this.formatOnSearchResponse(context, items);
-
-        return response;
-    }
+        try {
+          const { context, message } = request_DTO;
+          console.log('Search context:', context);
+          console.log('Search message:', message);
+      
+          const searchParams = message.intent;
+      
+          // Fetch data from the database
+          const items = await this.fetchServices(searchParams);
+      
+          // Format the response dynamically based on the fetched data
+          const response = this.formatOnSearchResponse(context, items);
+      
+          return response;
+        } catch (error) {
+          console.error('Error in search method:', error);
+          throw error;
+        }
+      }
 
     select = (request_DTO: any) => {
         SelectResponse.context.bpp_id = this.bpp_id;
