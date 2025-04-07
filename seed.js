@@ -71,7 +71,7 @@ const test = async () => {
     console.log("✅ Inserted dummy item into 'test_items' collection");
 
     // Retrieve it
-    const items = await TestItem.find({});
+    const items = await Service.find({});
     console.log("📦 Retrieved items:", items);
 
     mongoose.connection.close();
