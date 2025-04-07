@@ -1,6 +1,5 @@
 
 import { Injectable } from "@nestjs/common";
-import * as SearchResponse from "./response/response.search.json";
 import * as InitResponse from "./response/response.init.json";
 import * as ConfirmResponse from "./response/response.confirm.json";
 import * as SelectResponse from "./response/response.select.json";
@@ -22,13 +21,19 @@ export class RetailService {
         this.bpp_id = this.configService.get<string>('BPP_ID');
         this.bpp_uri = this.configService.get<string>('BPP_URI');
     }
-    search = (request_DTO: any) => {
-        SearchResponse.context.bpp_id = this.bpp_id;
-        SearchResponse.context.bpp_uri = this.bpp_uri;
-        //Business logic goes here
-        //We are returning the fixed the json which can be overwritten by actual business to fetch data
-        return SearchResponse;
-    };
+    async search(request_DTO: any): Promise<any> {
+        const { context, message } = request_DTO;
+        const searchParams = message.intent;
+
+        // Fetch data from the database
+        const items = await this.fetchServices(searchParams);
+
+        // Format the response dynamically based on the fetched data
+        const response = this.formatOnSearchResponse(context, items);
+
+        return response;
+    }
+
     select = (request_DTO: any) => {
         SelectResponse.context.bpp_id = this.bpp_id;
         SelectResponse.context.bpp_uri = this.bpp_uri;
@@ -94,12 +99,20 @@ export class RetailService {
     };
 
     async fetchServices(searchParams: any): Promise<any[]> {
-        const db = await connectToDatabase();
-        const location = searchParams.fulfillment?.start?.location;
-    
-        // Query the database for services based on location
-        const items = await db.collection('services').find({ location }).toArray();
-        return items;
+        try {
+            const db = await connectToDatabase();
+            const location = searchParams.fulfillment?.start?.location;
+        
+            if (!location) {
+              throw new Error('Location is required');
+            }
+        
+            const items = await db.collection('services').find({ location }).toArray();
+            return items;
+          } catch (error) {
+            console.error('Error fetching services:', error);
+            throw new Error('Failed to fetch services');
+        }
       }
 
       formatOnSearchResponse(context: any, items: any[]): any {
