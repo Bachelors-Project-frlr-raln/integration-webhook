@@ -1,22 +1,30 @@
-import { MongoClient } from 'mongodb';
+const mongoose = require('mongoose');
 
-async function seedDatabase() {
-  const uri = 'mongodb://beckn:beckn123@localhost:27017'; // Update this if your MongoDB URI is different
-  const dbName = 'foobar'; // Database name
-  const client = new MongoClient(uri);
+const MONGO_URI = 'mongodb://beckn:beckn123@localhost:27017';
 
+const test = async () => {
   try {
-    await client.connect();
-    console.log('Connected to MongoDB');
+    await mongoose.connect(MONGO_URI);
+    console.log("✅ Connected to MongoDB!");
 
-    const db = client.db(dbName);
-    const servicesCollection = db.collection('services');
+    // Define a simple schema
+    const ServiceSchema = new mongoose.Schema({
+      _id: String,
+      name: String,
+      short_desc: String,
+      long_desc: String,
+      price: {
+        currency: String,
+        value: String,
+      },
+      location: String,
+      location_id: String,
+    });
 
-    // Clear existing data
-    await servicesCollection.deleteMany({});
-    console.log('Cleared existing data in the services collection');
+    // Insert dummy data
 
-    // Insert seed data
+    const Service = mongoose.model('Service', ServiceSchema);
+
     const seedData = [
       {
         _id: 'service1',
@@ -56,14 +64,21 @@ async function seedDatabase() {
       },
     ];
 
-    const result = await servicesCollection.insertMany(seedData);
-    console.log(`Inserted ${result.insertedCount} documents into the services collection`);
-  } catch (error) {
-    console.error('Error seeding database:', error);
-  } finally {
-    await client.close();
-    console.log('Disconnected from MongoDB');
-  }
-}
+    await Service.deleteMany({});
+    console.log("✅ Cleared existing data in the 'services' collection");
 
-seedDatabase();
+    await Service.insertMany(seedData);
+    console.log("✅ Inserted dummy item into 'test_items' collection");
+
+    // Retrieve it
+    const items = await TestItem.find({});
+    console.log("📦 Retrieved items:", items);
+
+    mongoose.connection.close();
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+    process.exit(1);
+  }
+};
+
+test();
