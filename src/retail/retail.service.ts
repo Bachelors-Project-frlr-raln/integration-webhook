@@ -23,6 +23,9 @@ export class RetailService {
     }
     async search(request_DTO: any): Promise<any> {
         const { context, message } = request_DTO;
+        console.log("context", context);
+        console.log("message", message);
+
         const searchParams = message.intent;
 
         // Fetch data from the database
