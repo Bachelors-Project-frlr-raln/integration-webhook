@@ -15,6 +15,8 @@ export class AppController {
     @HttpCode(200)
     webhookHandler(@Body() webhookBody: any): any {
         const { context, message } = webhookBody;
+        console.log('Webhook context:', context);
+        console.log('Webhook message:', message);
         return this.appService.webhook( context, message );
     }
 }

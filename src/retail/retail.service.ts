@@ -10,7 +10,7 @@ import * as CancelResponse from "./response/response.cancel.json";
 import * as TrackResponse from "./response/response.track.json";
 import * as RatingResponse from './response/response.rating.json';
 import { ConfigService } from "@nestjs/config";
-import { connectToDatabase } from "../db";
+import { connectToDatabase } from "../db";
 
 
 @Injectable()
