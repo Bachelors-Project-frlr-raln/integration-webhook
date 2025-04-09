@@ -40,7 +40,7 @@ export class AppService {
   async sendResponseToBPPClient(response: any) {
     try {
       const action = response.context.action;
-      const url = `${this.bpp_client_url}/${action}`;
+      const url = `https://onix-bpp-client.foodeez.dk${action}`; //`${this.bpp_client_url}/${action}`;
       console.log('Url is: ', url);
       await this.axios.post(url, response);
     } catch (error) {
